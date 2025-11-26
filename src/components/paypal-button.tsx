@@ -1,33 +1,22 @@
 "use client";
 
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { useEffect } from "react";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 interface PayPalButtonProps {
   amount: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSuccess: (details: any) => void;
 }
-
+const initialOptions = {
+  clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+  currency: "USD",
+  intent: "capture",
+};
 export function PayPalButton({ amount, onSuccess }: PayPalButtonProps) {
-  const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
-
-  useEffect(() => {
-    dispatch({
-      // @ts-expect-error - resetOptions is a valid action but types might be outdated
-      type: "resetOptions",
-      value: {
-        ...options,
-        currency: "USD",
-      },
-    });
-  }, [amount, dispatch, options]);
-
   return (
-    <>
-      {isPending ? <div className="spinner" /> : null}
+    <PayPalScriptProvider options={initialOptions}>
       <PayPalButtons
-        style={{ layout: "vertical" }}
+        style={{ layout: "vertical", disableMaxWidth: true }}
         createOrder={(data, actions) => {
           return actions.order.create({
             intent: "CAPTURE",
@@ -47,6 +36,6 @@ export function PayPalButton({ amount, onSuccess }: PayPalButtonProps) {
           });
         }}
       />
-    </>
+    </PayPalScriptProvider>
   );
 }
