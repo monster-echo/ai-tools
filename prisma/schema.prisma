@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id              String    @id @default(cuid())
+  clerkId         String    @unique
+  email           String
+  credits         Int       @default(0)
+  lastDailyReward DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  generations ImageGeneration[]
+}
+
+model ImageGeneration {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  prompt   String
+  model    String
+  ratio    String
+  style    String
+  imageUrl String?
+  status   String  @default("PENDING") // PENDING, COMPLETED, FAILED
+  cost     Int
+
+  createdAt DateTime @default(now())
+}
