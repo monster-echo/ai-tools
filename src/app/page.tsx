@@ -90,9 +90,12 @@ export default async function Home() {
             </Link>
             <Link
               href="/features/image-studio"
-              className="hover:underline underline-offset-4"
+              className="hover:underline underline-offset-4 relative"
             >
               Image Studio
+              <span className="absolute -top-2 -right-16 whitespace-nowrap inline-flex items-center justify-center rounded-full bg-linear-to-r from-pink-500 to-violet-500 px-1.5 py-0.5 text-[10px] font-bold text-white shadow-sm">
+                New Flux 2
+              </span>
             </Link>
           </nav>
           <div className="flex items-center gap-4">
